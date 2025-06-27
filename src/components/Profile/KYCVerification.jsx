@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,45 +9,41 @@ import { jwtDecode } from 'jwt-decode';
 
 const KYCVerification = () => {
   const [formData, setFormData] = useState({
-    username: '',
     aadharNumber: '',
     panNumber: '',
     phoneNumber: ''
   });
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationComplete, setVerificationComplete] = useState(false);
-  const [kycDone,setKycDone] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(true);
 
   const navigate = useNavigate();
   const token = Cookies.get("token");
   const decoded = jwtDecode(token);
   const username = decoded.username || decoded.sub;
-  console.log(username);
+
+  // 🔍 Check if KYC already done
   useEffect(() => {
     const checkKycStatus = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/protected/kyc/status/${username}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        const res = await axios.get(`http://localhost:8080/api/protected/kyc/status/${username}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-        console.log(response);
-        if (response.data === "KYC done") {
-          setKycDone(true); // or however you handle this state
-        } else {
-          setKycDone(false);
+        if (res.data === 'KYC done') {
+          setVerificationComplete(true);
         }
       } catch (error) {
-        console.error("Error checking KYC status", error);
+        console.error("Error checking KYC status:", error);
+      } finally {
+        setCheckingStatus(false);
       }
     };
-  
     checkKycStatus();
-  }, [username]);
-  
+  }, [username, token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.phoneNumber.length !== 10) {
       toast.error('Phone number must be exactly 10 digits.');
       return;
@@ -60,52 +56,54 @@ const KYCVerification = () => {
       toast.error('PAN number must be exactly 10 characters.');
       return;
     }
-    
-    setIsVerifying(true);
-    
-    try {
-      // Simulate 10-second verification process
-      const verificationPromise = new Promise((resolve) => {
-        setTimeout(async () => {
-          try {
-            const response = await axios.post('http://localhost:8080/api/protected/kyc/submit', formData, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
-            });
-            resolve(response);
-          } catch (error) {
-            resolve({ error });
-          }
-        }, 10000); // 10 seconds delay
-      });
 
+    setIsVerifying(true);
+
+    const payload = {
+      name: username,
+      aadhaar: formData.aadharNumber,
+      pan: formData.panNumber,
+      phoneNumber: formData.phoneNumber
+    };
+
+    const verificationPromise = new Promise((resolve) => {
+      setTimeout(async () => {
+        try {
+          const response = await axios.post('http://localhost:8080/api/protected/kyc/submit', payload, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          resolve(response);
+        } catch (error) {
+          resolve({ error });
+        }
+      }, 3000); // Simulate 3-second delay
+    });
+
+    try {
       const result = await verificationPromise;
-      
-      if (result.error) {
-        // Handle error from backend
-        if (result.error.response && result.error.response.status === 400) {
-          toast.error(result.error.response.data);
-        } else {
-          toast.error('KYC submission failed: ' + (result.error.response?.data?.message || result.error.message));
-        }
+      const message = result.data;
+      if (message.includes("Invalid") || message.includes("PAN") || message.includes("AADHAR")) {
+        toast.error(message);
       } else {
-        // Handle successful response
-        const message = result.data;
-        if (message === "PAN DOES NOT MATCH" || message === "AADHAR DOES NOT MATCH") {
-          toast.error(message);
-        } else {
-          // If no error message, consider it as successful verification
-          setVerificationComplete(true);
-          toast.success('KYC verification completed successfully!');
-        }
+        setVerificationComplete(true);
+        toast.success('KYC verification completed successfully!');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred during verification.');
+      if (error.response?.status === 400) {
+        toast.error(error.response.data);
+      } else {
+        toast.error('An unexpected error occurred during verification.');
+      }
     } finally {
       setIsVerifying(false);
     }
   };
+
+  if (checkingStatus) {
+    return <div className="text-center text-white mt-10">Checking KYC status...</div>;
+  }
 
   if (verificationComplete) {
     return (
@@ -138,17 +136,6 @@ const KYCVerification = () => {
         <h2 className="text-2xl font-bold text-gray-900 mb-6">KYC Verification</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
-              <input
-                type="text"
-                required
-                value={formData.username}
-                onChange={e => setFormData({ ...formData, username: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
-                placeholder="Enter your username"
-              />
-            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
               <input
@@ -220,4 +207,4 @@ const KYCVerification = () => {
   );
 };
 
-export default KYCVerification; 
+export default KYCVerification;

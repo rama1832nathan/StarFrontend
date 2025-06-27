@@ -14,8 +14,6 @@ const initialRegister = {
   city: '',
   state: '',
   postalcode: '',
-  aadharnumber: '',
-  pannumber: '',
 };
 
 const validateRegister = (values) => {
@@ -40,10 +38,6 @@ const validateRegister = (values) => {
   if (!values.state) errors.state = 'State is required';
   if (!values.postalcode) errors.postalcode = 'Postal code is required';
   else if (!/^\d{6}$/.test(values.postalcode)) errors.postalcode = 'Postal code must be 6 digits';
-  if (!values.aadharnumber) errors.aadharnumber = 'Aadhar number is required';
-  else if (!/^\d{12}$/.test(values.aadharnumber)) errors.aadharnumber = 'Aadhar must be 12 digits';
-  if (!values.pannumber) errors.pannumber = 'PAN number is required';
-  else if (!/^[A-Z0-9]{10}$/.test(values.pannumber)) errors.pannumber = 'PAN must be 10 uppercase alphanumeric characters';
   return errors;
 };
 
@@ -151,31 +145,6 @@ const Register = () => {
                   <input type="text" name="postalcode" value={register.postalcode} onChange={handleRegisterChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition" />
                   {regSubmitted && regErrors.postalcode && <p className="text-red-600 text-xs mt-1">{regErrors.postalcode}</p>}
                 </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Aadhar Number</label>
-                  <input type="text" name="aadharnumber" value={register.aadharnumber} onChange={handleRegisterChange} maxLength={12} className={`w-full p-3 border ${regSubmitted && regErrors.aadharnumber ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition`} />
-                  {regSubmitted && regErrors.aadharnumber && <p className="text-red-600 text-xs mt-1">{regErrors.aadharnumber}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">PAN Number</label>
-                  <input
-                    type="text"
-                    name="pannumber"
-                    value={register.pannumber}
-                    onChange={e => {
-                      setRegister({ ...register, pannumber: e.target.value.toUpperCase() });
-                    }}
-                    maxLength={10}
-                    className={`w-full p-3 border ${regSubmitted && regErrors.pannumber ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition`}
-                  />
-                  {regSubmitted && regErrors.pannumber && <p className="text-red-600 text-xs mt-1">{regErrors.pannumber}</p>}
-                </div>
-              </div>
-              {/* Note and Terms */}
-              <div className="mb-2 text-sm text-yellow-700 bg-yellow-100 rounded px-3 py-2 border border-yellow-300">
-                <strong>Note:</strong> Please double-check your <span className="font-semibold">Aadhar</span> and <span className="font-semibold">PAN</span> numbers before registering. These will be used for future purposes and cannot be changed later.
               </div>
               <div className="flex items-center mb-4">
                 <input
