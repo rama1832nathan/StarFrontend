@@ -1,0 +1,224 @@
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, User, Shield, Coins, CreditCard, Wallet } from 'lucide-react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+
+const ProfileNavbar = ({ activeSection, setActiveSection, userData, setUserData }) => {
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const navigationItems = [
+    { id: 'loan', label: 'Loan', icon: Coins },
+    { id: 'cards', label: 'Cards', icon: CreditCard },
+    { id: 'payment', label: 'Payment', icon: Wallet }
+  ];
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = Cookies.get('token');
+        if (!token) {
+          console.error('No token found');
+          return;
+        }
+
+        // Decode JWT token to get username
+        const decoded = jwtDecode(token);
+        const username = decoded.username || decoded.sub;
+
+        if (!username) {
+          console.error('No username found in token');
+          return;
+        }
+
+        // Make API call to fetch user details
+        const response = await axios.get(`http://localhost:8080/api/user/details/${username}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.data) {
+          setUserData({
+            username: response.data.username || username,
+            email: response.data.email || '',
+            phone: response.data.phonenumber || '',
+            address: response.data.address || '',
+            aadharnumber: response.data.aadharnumber || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        // Fallback to token data if API fails
+        try {
+          const token = Cookies.get('token');
+          if (token) {
+            const decoded = jwtDecode(token);
+            setUserData({
+              username: decoded.username || decoded.sub || 'User',
+              email: decoded.email || 'user@email.com',
+              phone: decoded.phone || 'N/A',
+              address: decoded.address || 'N/A',
+              aadharnumber: decoded.aadharnumber || 'N/A'
+            });
+          }
+        } catch (decodeError) {
+          console.error('Error decoding token:', decodeError);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, [setUserData]);
+
+  const handleLogout = () => {
+    Cookies.remove('token');
+    navigate('/login');
+  };
+
+  return (
+    <nav className="bg-white shadow-lg border-b border-gray-200 bg-gradient-to-br from-[#0a2342] via-[#274690] to-[#a3cef1] ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Brand Logo */}
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
+              <Coins className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-2xl font-bold text-white">Star Finance</span>
+          </div>
+
+          {/* Navigation Items */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                    activeSection === item.id
+                      ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                      : 'text-white hover:text-blue-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Side - KYC and User */}
+          <div className="flex items-center space-x-4">
+            {/* KYC Indicator */}
+            <div className="relative">
+              <button
+                className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 transition-all duration-200"
+                onClick={() => navigate('/profile/kyc')}
+              >
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <Shield className="w-4 h-4" />
+                <span className="font-medium text-sm">KYC Pending</span>
+              </button>
+            </div>
+
+            {/* User Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowUserDropdown(!showUserDropdown)}
+                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200"
+              >
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-white" />
+                </div>
+                <ChevronDown className="w-4 h-4 text-gray-600" />
+              </button>
+
+              {/* User Dropdown Menu */}
+              {showUserDropdown && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+                  <div className="p-4">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                        <User className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">
+                          {loading ? 'Loading...' : (userData?.username || 'User')}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {loading ? 'Loading...' : (userData?.email || 'user@email.com')}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Phone:</span>
+                        <span className="text-sm font-medium">
+                          {loading ? 'Loading...' : (userData?.phone || 'N/A')}
+                        </span>
+                      </div>
+                      {/* <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Email:</span>
+                        <span className="text-sm font-medium">
+                          {loading ? 'Loading...' : (userData?.email || 'N/A')}
+                        </span>
+                      </div> */}
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Address:</span>
+                        <span className="text-sm font-medium max-w-32 truncate">
+                          {loading ? 'Loading...' : (userData?.address || 'N/A')}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <button
+                        className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden py-4 border-t border-gray-200">
+          <div className="flex space-x-4 overflow-x-auto">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-200 ${
+                    activeSection === item.id
+                      ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                      : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default ProfileNavbar; 
