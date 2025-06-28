@@ -12,6 +12,7 @@ import Support from './components/Landing/Support'
 import Profile from './components/Profile'
 import PrivateRoute from './components/PrivateRoute'
 import KYCVerification from './components/Profile/KYCVerification'
+import UserProfile from './components/Profile/UserProfile'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -38,6 +39,14 @@ function App() {
           element={
             <PrivateRoute>
               <KYCVerification />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/userprofile"
+          element={
+            <PrivateRoute>
+              <UserProfile />
             </PrivateRoute>
           }
         />

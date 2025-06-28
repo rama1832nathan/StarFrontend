@@ -185,6 +185,12 @@
 
                       <div className="mt-4 pt-4 border-t border-gray-200">
                         <button
+                          className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors mb-2"
+                          onClick={() => navigate('/userprofile')}
+                        >
+                          View Profile
+                        </button>
+                        <button
                           className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           onClick={handleLogout}
                         >
