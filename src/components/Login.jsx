@@ -81,14 +81,14 @@ const Login = () => {
     return (
       <>
         <ToastContainer position="top-center" autoClose={3000} />
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-4 relative rounded">
+        <div className="min-h-screen flex items-center justify-center bg-[#162e76] p-4 relative rounded">
           <BackArrow onClick={() => navigate('/')} />
           <div className="w-full max-w-md">
             <div className="flex flex-col items-center mb-8">
               <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg mb-2">
                 <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/><text x="12" y="17" textAnchor="middle" fontSize="14" fill="#f59e42" fontWeight="bold">SF</text></svg>
               </div>
-              <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Star Finance</h1>
+              <h1 className="text-3xl font-extrabold text-white tracking-tight">Star Finance</h1>
             </div>
             <div className="bg-white rounded-2xl shadow-2xl p-8 border border-blue-100">
               <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">Enter OTP</h2>
@@ -121,14 +121,14 @@ const Login = () => {
   return (
     <>
       <ToastContainer position="top-center" autoClose={3000} />
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-4 relative">
+      <div className="min-h-screen flex items-center justify-center bg-[#162e76] p-4 relative">
         <BackArrow onClick={() => navigate('/')} />
         <div className="w-full max-w-md">
           <div className="flex flex-col items-center mb-8">
             <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg mb-2 cursor-pointer" onClick={() => navigate('/') }>
               <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/><text x="12" y="17" textAnchor="middle" fontSize="14" fill="#f59e42" fontWeight="bold">SF</text></svg>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight cursor-pointer" onClick={() => navigate('/') }>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight cursor-pointer" onClick={() => navigate('/') }>
               Star Finance
             </h1>
           </div>

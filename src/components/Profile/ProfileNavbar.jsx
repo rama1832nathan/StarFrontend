@@ -102,7 +102,7 @@
               {/* KYC Indicator */}
               <div className="relative">
   <button
-    className={`flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-200 ${
+    className={`flex items-center space-x-2 px-3 py-2 rounded-lg border hover:cursor-pointer transition-all duration-200 ${
       kycVerified === null
         ? 'bg-gray-50 text-gray-500 border-gray-200'
         : kycVerified

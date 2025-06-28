@@ -109,7 +109,7 @@ const KYCVerification = () => {
     return (
       <div className="max-w-2xl mx-auto p-6">
         <button
-          className="mb-6 flex items-center text-white hover:underline font-semibold"
+          className="mb-6 flex items-center hover:cursor-pointer text-white hover:underline font-semibold"
           onClick={() => navigate('/profile')}
         >
           &#8592; Back to Profile

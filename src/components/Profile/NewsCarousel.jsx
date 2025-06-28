@@ -123,7 +123,7 @@ const NewsCarousel = () => {
                 ))}
               </div>
 
-              <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+              <button className="bg-gradient-to-r hover:cursor-pointer from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
                 Learn More
               </button>
             </div>
@@ -144,13 +144,13 @@ const NewsCarousel = () => {
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 hover:cursor-pointer bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
         >
           <ChevronLeft className="w-5 h-5 text-gray-600" />
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 hover:cursor-pointer bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
         >
           <ChevronRight className="w-5 h-5 text-gray-600" />
         </button>

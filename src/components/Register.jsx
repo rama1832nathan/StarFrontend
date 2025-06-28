@@ -14,6 +14,9 @@ const initialRegister = {
   city: '',
   state: '',
   postalcode: '',
+  accountType: '',
+  branchLocation: '',
+  bankName: 'Star Bank'
 };
 
 const validateRegister = (values) => {
@@ -38,6 +41,8 @@ const validateRegister = (values) => {
   if (!values.state) errors.state = 'State is required';
   if (!values.postalcode) errors.postalcode = 'Postal code is required';
   else if (!/^\d{6}$/.test(values.postalcode)) errors.postalcode = 'Postal code must be 6 digits';
+  if (!values.accountType) errors.accountType = 'Account type is required';
+  if (!values.branchLocation) errors.branchLocation = 'Branch location is required';
   return errors;
 };
 
@@ -80,13 +85,13 @@ const Register = () => {
   return (
     <>
       <ToastContainer position="top-center" autoClose={3000} />
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#162e76] p-4">
         <div className="w-full max-w-2xl">
           <div className="flex flex-col items-center mb-8">
             <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg mb-2">
               <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/><text x="12" y="17" textAnchor="middle" fontSize="14" fill="#f59e42" fontWeight="bold">SF</text></svg>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Star Finance</h1>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">Star Finance</h1>
           </div>
           <div className="bg-white rounded-2xl shadow-2xl p-8">
             <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">Register</h2>
@@ -145,6 +150,49 @@ const Register = () => {
                   <input type="text" name="postalcode" value={register.postalcode} onChange={handleRegisterChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition" />
                   {regSubmitted && regErrors.postalcode && <p className="text-red-600 text-xs mt-1">{regErrors.postalcode}</p>}
                 </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
+                  <select
+                    name="accountType"
+                    value={register.accountType}
+                    onChange={handleRegisterChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition"
+                    required
+                  >
+                    <option value="">Select Account Type</option>
+                    <option value="savings">Savings</option>
+                    <option value="current">Current</option>
+                  </select>
+                  {regSubmitted && !register.accountType && <p className="text-red-600 text-xs mt-1">Account type is required</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Branch Location</label>
+                  <select
+                    name="branchLocation"
+                    value={register.branchLocation}
+                    onChange={handleRegisterChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none transition"
+                    required
+                  >
+                    <option value="">Select Branch</option>
+                    <option value="selaiyur">Selaiyur</option>
+                    <option value="chromepet">Chromepet</option>
+                    <option value="tambaram">Tambaram</option>
+                  </select>
+                  {regSubmitted && !register.branchLocation && <p className="text-red-600 text-xs mt-1">Branch location is required</p>}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+                <input
+                  type="text"
+                  name="bankName"
+                  value={register.bankName}
+                  disabled
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-700"
+                />
               </div>
               <div className="flex items-center mb-4">
                 <input
