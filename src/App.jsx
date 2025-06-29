@@ -13,6 +13,7 @@ import Profile from './components/Profile'
 import PrivateRoute from './components/PrivateRoute'
 import KYCVerification from './components/Profile/KYCVerification'
 import UserProfile from './components/Profile/UserProfile'
+import GoldLoanForm from './components/Profile/GoldLoanForm'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -47,6 +48,14 @@ function App() {
           element={
             <PrivateRoute>
               <UserProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/goldloanform"
+          element={
+            <PrivateRoute>
+              <GoldLoanForm />
             </PrivateRoute>
           }
         />

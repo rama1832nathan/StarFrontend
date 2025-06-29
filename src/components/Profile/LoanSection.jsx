@@ -1,10 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Crown, Coins, Calculator, TrendingUp, Shield, Clock, CheckCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const LoanSection = () => {
+  const navigate = useNavigate();
   const [selectedLoan, setSelectedLoan] = useState('gold');
   const [loanAmount, setLoanAmount] = useState('');
   const [weight, setWeight] = useState('');
+  const [kycVerified, setKycVerified] = useState(null);
+
+  useEffect(() => {
+    // Fetch KYC status on mount
+    const fetchKycStatus = async () => {
+      try {
+        const token = Cookies.get('token');
+        if (!token) return;
+        const username = JSON.parse(atob(token.split('.')[1])).username || JSON.parse(atob(token.split('.')[1])).sub;
+        const kycResponse = await axios.get(`http://localhost:8080/api/protected/kyc/status/${username}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        setKycVerified(kycResponse.data === 'KYC done');
+      } catch (error) {
+        setKycVerified(false);
+      }
+    };
+    fetchKycStatus();
+  }, []);
 
   const loanTypes = {
     gold: {
@@ -63,6 +88,21 @@ const LoanSection = () => {
 
   const currentLoan = loanTypes[selectedLoan];
 
+  const handleApplyLoan = () => {
+    if (!kycVerified) {
+      toast.error('KYC should be done to apply for the loan');
+      return;
+    }
+    
+    // Redirect to appropriate loan form based on selected loan type
+    if (selectedLoan === 'gold') {
+      navigate('/goldloanform');
+    } else {
+      // For silver loan, you can add similar logic later
+      toast.info('Silver loan form will be available soon!');
+    }
+  };
+
   return (
     <div className="space-y-8 bg-gradient-to-br from-[#0a2342] via-[#274690] to-[#a3cef1] rounded-2xl p-4">
       {/* Header */}
@@ -83,7 +123,7 @@ const LoanSection = () => {
             <button
               key={key}
               onClick={() => setSelectedLoan(key)}
-              className={`relative p-6 rounded-xl border-2 transition-all hover:cursor-pointer duration-300  ${
+              className={`relative p-6 rounded-xl border-2 transition-all hover:cursor-pointer hover:scale-105 duration-300  ${
                 selectedLoan === key
                   ? `${loan.borderColor} ${loan.bgColor} shadow-lg`
                   : 'border-gray-200 hover:border-gray-300'
@@ -172,7 +212,10 @@ const LoanSection = () => {
                 <div className="text-2xl font-bold text-green-600">{calculateLoan()}</div>
               </div>
 
-              <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all duration-300">
+              <button
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all duration-300"
+                onClick={handleApplyLoan}
+              >
                 Apply for {currentLoan.title}
               </button>
             </div>
