@@ -14,6 +14,7 @@ import PrivateRoute from './components/PrivateRoute'
 import KYCVerification from './components/Profile/KYCVerification'
 import UserProfile from './components/Profile/UserProfile'
 import GoldLoanForm from './components/Profile/GoldLoanForm'
+import SilverLoanForm from './components/Profile/SilverLoanForm'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -56,6 +57,14 @@ function App() {
           element={
             <PrivateRoute>
               <GoldLoanForm />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/silverloanform"
+          element={
+            <PrivateRoute>
+              <SilverLoanForm />
             </PrivateRoute>
           }
         />

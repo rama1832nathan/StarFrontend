@@ -97,9 +97,8 @@ const LoanSection = () => {
     // Redirect to appropriate loan form based on selected loan type
     if (selectedLoan === 'gold') {
       navigate('/goldloanform');
-    } else {
-      // For silver loan, you can add similar logic later
-      toast.info('Silver loan form will be available soon!');
+    } else if (selectedLoan === 'silver') {
+      navigate('/silverloanform');
     }
   };
 

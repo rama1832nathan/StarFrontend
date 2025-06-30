@@ -47,14 +47,14 @@ const Login = () => {
       setGeneratedOtp(randomOtp);
       setOtpLoading(true);
       await emailjs.send(
-        'service_xf589d8',
-        'template_oo3s354',
+        'service_870mgyv',
+        'template_hdfjl5g',
         {
           email: email,
           passcode: randomOtp,
           time: 15,
         },
-        'BRVS-yF1PaNr1-FOE'
+        'lGyBVxD33Pkm3GAck'
       );
       console.log(randomOtp);
       setShowOtp(true);
